@@ -11,7 +11,8 @@ With additions by Kenneth Long, U. Wisconsin -- Madison
 """
 def getWeightIDs(edm_file_name) :
     if "/store/" in edm_file_name :
-        edm_file_name = "/".join(["root://cmsxrootd.fnal.gov/",
+        #edm_file_name = "/".join(["root://cmsxrootd.fnal.gov/",
+        edm_file_name = "/".join(["root://cms-xrd-global.cern.ch/",
             edm_file_name])
     elif not os.path.isfile(edm_file_name) :
         raise FileNotFoundException("File %s was not found." % edm_file_name)
@@ -21,6 +22,11 @@ def getWeightIDs(edm_file_name) :
     run = runs.__iter__().next()
     run.getByLabel(lheLabel, runInfoHandle)
     lheStuff = runInfoHandle.product()
+
+    # id number of PDF used
+    pdfidx = lheStuff.heprup().PDFSUP.first
+    print '%% Id number of PDF used: '+str(pdfidx)
+
     lines = []
     for i, h in enumerate(lheStuff.headers_begin()) :
         if i == lheStuff.headers_size() :
@@ -33,5 +39,5 @@ def getWeightIDs(edm_file_name) :
                 isWeights = True
         if isWeights :
             lines.extend(hlines)
-            break
+    #        break
     return ''.join(lines).rstrip("<")
